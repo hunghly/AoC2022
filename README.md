@@ -1,0 +1,1 @@
+Compile with g++ -Wall -std=c++14 <filename>.cpp -o <output>
