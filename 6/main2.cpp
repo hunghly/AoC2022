@@ -30,7 +30,7 @@ void processStream(string line) {
         buffer += ch;
         counter++;
         // every four characters, perform a check
-        if (buffer.size() == 4) {
+        if (buffer.size() == 14) {
             // If no duplicates, then it's the start of the packet
             if (verifyDuplicates(buffer)) {
                 cout << "Answer: " << counter << endl;
