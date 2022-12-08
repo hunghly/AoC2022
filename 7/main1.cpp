@@ -9,18 +9,14 @@
 #include <set>
 #include <iterator>
 #include <iomanip>
+#include <list>
+#include "main1.h"
 
 using namespace std;
 
-class Directory {
-public:
-    string name;
-    vector<Directory> directories;
-    vector<string> files;
-    Directory(string name) {
-        this->name = name;
-    }
-};
+list<Directory> directories {};
+string currentDirectory {};
+Directory emptyDir {""};
 
 bool isACommand(string line) {
     // Check if command or std output
@@ -29,6 +25,53 @@ bool isACommand(string line) {
         return true;
     }
     return false;
+}
+
+void printDirectories() {
+    for (auto directory : directories) {
+        cout << "Directory name: " << directory.name << endl;
+        if (directory.name != "root") {
+            cout << "Directory parent: " << directory.parent->name << endl;
+        }
+    }
+}
+
+Directory& getDirectory(string name) {
+    for (auto &directory : directories) {
+        if (directory.name == name) {
+            cout << "Directory exists:" << name << endl;
+            return directory;
+        }
+    }
+    return emptyDir;
+}
+
+void runCD(vector<string> command) {
+    // if (command[1] == "cd") {
+        if (command[2] == "/") {
+            if (directories.size() == 0) {
+                // create root directory
+                directories.push_back(Directory {"root", NULL});
+            }
+            currentDirectory = "root";
+        }
+        else if (command[2] == "..") {
+            // implement this
+        }
+        else {
+            // if directory doesn't exist in list, add it
+            if (getDirectory(command[2]) == emptyDir) {
+                cout << "Creating new directory!" << endl;
+                Directory *parent = &getDirectory(currentDirectory);
+                directories.push_back(Directory {command[2], parent});
+                currentDirectory = command[2];
+            } 
+            // just change directory
+            else {
+                currentDirectory = command[2];
+            }
+        }     
+    // }
 }
 
 void printCommand(vector<string> command) {
@@ -45,7 +88,6 @@ int main() {
     ifstream file {"input1.txt"};
     string line;
     Directory root {"root"};
-    string currentDirectory {};
     string token {};
     vector<string> command {};
     while (getline(file, line)) {
@@ -59,7 +101,12 @@ int main() {
                 }
             }
             printCommand(command);
-
+            if (command[1] == "cd") {
+                runCD(command);
+            } else if (command[1] == "ls") {
+                // get lines until next command detected
+            }
+            printDirectories();
             // clear command after running
             if (!command.empty()) {
                 // cout << "Clearing" << endl;
