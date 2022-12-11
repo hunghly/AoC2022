@@ -25,6 +25,8 @@ void printDirectory(Directory* directory, int distance) {
         cout << "\t";
     }
     cout << "(dir) " << directory->name << "(" << directory->dirFileSize << ")";
+    // cout << "inside Print: directory: " << directory->name << " Size: " << directory->subdirectories.size() << endl;
+
     if (directory->subdirectories.size() > 0) {
         cout << "[" << directory->dirFileSize + directory->getSubDirFileSize() << "]";
     }
@@ -42,10 +44,13 @@ void printDirectory(Directory* directory, int distance) {
 
 void printDirectories() {
     cout << "===Printing Dirs===" << endl;
-    list<Directory*> tmp = directories;
-    for (auto &directory : tmp) {
-        cout << "directory: " << directory->name << directory->subdirectories.size() << endl;
+    // list<Directory*> tmp = directories;
+    for (auto &directory : directories) {
+            // cout << "directory: " << directory->name << " Size: " << directory->subdirectories.size() << endl;
+
+        // cout << "directory: " << directory->name << directory->subdirectories.size() << endl;
         if (directory->subdirectories.size() > 0) {
+            // cout << "Printing subdirectories" << endl;
             // while (directory->subdirectories.size() > 0) {
             //     for (auto subdir : directory->subdirectories) {
             //         cout << "printing subdirs?" << endl;
@@ -54,15 +59,15 @@ void printDirectories() {
             //     cout << "removing: " << (*directory->subdirectories.begin())->name << endl;
             //     directory->subdirectories.erase(directory->subdirectories.begin());
             // }
+            printDirectory(directory, directory->distanceFromRoot);
 
         } else {
-            cout << "calling else " << endl;
+            // cout << "calling else " << endl;
             printDirectory(directory, directory->distanceFromRoot);
             // tmp.erase(tmp.begin());
         }
 
         
-
 
 
         // cout << "DFR: " << directory->name << directory->distanceFromRoot << endl;
