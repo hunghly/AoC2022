@@ -44,109 +44,87 @@ public:
         cout << "Columns: " << colSize << " Rows: " << rowSize << endl;
     }
 
-    bool isVisible(int row, int col, int side) {
-        bool isVisible = false;
+    int calculateViewDistance(int row, int col, int side) {
+        // bool isVisible = false;
+        // cout << "Checking: " << treeMap[row][col] << endl;
+        int count {0};
         switch (side) {
             case TOP:
-                for (int rowStart = 0; rowStart <= row; rowStart++) {
-                    // when we reach the column of the target cell, then exit
-                    if (rowStart == row) {
-                        cout << "top side visible" << endl;
-                        isVisible = true;
-                        break;
-                    }
+                for (int rowStart = row-1; rowStart >= 0; rowStart--) {
+                    // cout << "Verifying w/" << treeMap[rowStart][col] << endl;
+                    count++;
+                    // if (rowStart == 0) {
+                    //     break;
+                    // }
                     if (treeMap[rowStart][col] >= treeMap[row][col]) {
                         cout << "top side blocked by: " << treeMap[rowStart][col] << endl;
-                        isVisible = false;
                         break;
                     }
                 }
                 break;
             case RIGHT:
-                for (int colStart = colSize - 1; colStart >= col; colStart--) {
-                    // when we reach the column of the target cell, then exit
-                    if (colStart == col) {
-                        cout << "Right side visible" << endl;
-                        isVisible = true;
-                        break;
-                    }
+                for (int colStart = col+1; colStart < colSize; colStart++) {
+                    // cout << "Verifying w/" << treeMap[row][colStart] << endl;
+                    count++;
                     if (treeMap[row][colStart] >= treeMap[row][col]) {
                         cout << "Right side blocked by: " << treeMap[row][colStart] << endl;
-                        isVisible = false;
                         break;
                     }
                 }
                 break;
             case BOTTOM:
-                for (int rowStart = rowSize-1; rowStart >= row; rowStart--) {
-                    // when we reach the column of the target cell, then exit
-                    if (rowStart == row) {
-                        cout << "bottom side visible" << endl;
-                        isVisible = true;
-                        break;
-                    }
+                for (int rowStart = row+1; rowStart < rowSize; rowStart++) {
+                    // cout << "Verifying w/" << treeMap[rowStart][col] << endl;
+                    count++;
                     if (treeMap[rowStart][col] >= treeMap[row][col]) {
                         cout << "bottom side blocked by: " << treeMap[rowStart][col] << endl;
-                        isVisible = false;
                         break;
                     }
                 }
                 break;
             case LEFT:
-                for (int colStart = 0; colStart <= col; colStart++) {
-                    // when we reach the column of the target cell, then exit
-                    if (colStart == col) {
-                        cout << "Left side visible" << endl;
-                        isVisible = true;
-                        break;
-                    }
+                for (int colStart = col-1; colStart >= 0; colStart--) {
+                    // cout << "Verifying w/" << treeMap[row][colStart] << endl;
+                    count++;
                     if (treeMap[row][colStart] >= treeMap[row][col]) {
                         cout << "Left side blocked by: " << treeMap[row][colStart] << endl;
-                        isVisible = false;
                         break;
                     }
                 }
                 break;
             default:
-                return false;
+                return count;
         }
-        return isVisible;
+        return count;
     }
 
-    // Returns true if any portion is visible
-    bool isVisible(int row, int col) {
-        return (isVisible(row, col, TOP) || 
-               isVisible(row, col, RIGHT) ||
-               isVisible(row, col, BOTTOM) ||
-               isVisible(row, col, LEFT));
+    int calculateScenicScore(int row, int col) {
+        return calculateViewDistance(row, col, TOP) *
+               calculateViewDistance(row, col, RIGHT) *
+               calculateViewDistance(row, col, BOTTOM) *
+               calculateViewDistance(row, col, LEFT);
     }
 
-    // Returns true only if all portions are visible
-    bool isFullyVisible(int row, int col) {
-        return isVisible(row, col, TOP) && 
-               isVisible(row, col, RIGHT) &&
-               isVisible(row, col, BOTTOM) &&
-               isVisible(row, col, LEFT);
-    }
-
-    int countVisibles() {
-        int visibleCount {0};
+    int getBestView() {
+        int maxScenicScore {0};
+        int tmpScore {0};
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
-                if (isVisible(row, col)) {
-                    visibleCount++;
+                tmpScore = calculateScenicScore(row, col);
+                if (tmpScore > maxScenicScore) {
+                    maxScenicScore = tmpScore;
+                    cout << "New Max Scenic Score" << maxScenicScore << endl;
                 }
-                cout << visibleCount << endl;
             }
         }
-        return visibleCount;
+        return maxScenicScore;
     }
 };
 
 
 
 
-//AOC Day 8 Part 1
+//AOC Day 8 Part 2
 int main() {
     ifstream file {"input1.txt"};
     string treeRow;
@@ -162,6 +140,6 @@ int main() {
     }
     map.printMap();
     map.updateMapSize();
-    
-    cout << "Answer: " << map.countVisibles() << endl;
+    int answer = map.getBestView();
+    cout << "Answer: " << answer;
 }
