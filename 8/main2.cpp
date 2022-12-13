@@ -45,17 +45,12 @@ public:
     }
 
     int calculateViewDistance(int row, int col, int side) {
-        // bool isVisible = false;
-        // cout << "Checking: " << treeMap[row][col] << endl;
         int count {0};
         switch (side) {
             case TOP:
                 for (int rowStart = row-1; rowStart >= 0; rowStart--) {
                     // cout << "Verifying w/" << treeMap[rowStart][col] << endl;
                     count++;
-                    // if (rowStart == 0) {
-                    //     break;
-                    // }
                     if (treeMap[rowStart][col] >= treeMap[row][col]) {
                         cout << "top side blocked by: " << treeMap[rowStart][col] << endl;
                         break;
